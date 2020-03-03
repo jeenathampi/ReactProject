@@ -10,12 +10,21 @@ const surveyTemplate = require('../services/emailTemplates/surveyTemplate');
 const Survey = mongoose.model('surveys');
 
 module.exports= app => {
-    app.get('/api/surveys', async (req,res) => {
+    app.get('/api/surveys', requireLogin, async (req,res) => {
         const surveys = await Survey.find({_user: req.user.id})
                                  .select({recipients:false});
 
         res.send(surveys);
     });
+
+    app.delete('/api/surveys/:id', requireLogin, async (req,res) => {
+        await Survey.findByIdAndRemove(req.params.id);
+        const surveys = await Survey.find({_user: req.user.id})
+                                    .select({recipients:false});
+
+        res.send(surveys);
+    });
+
     app.get('/api/surveys/:id/:choice', (req,res) => {
         res.send('Thank you for your feedback!');
     })
@@ -50,13 +59,14 @@ module.exports= app => {
     });
 
     app.post('/api/surveys', requireLogin, requireCredits, async (req,res)=>{
-        const {title, body, subject, recipients} = req.body;
+        const {title, body, subject, recipients, from} = req.body;
 
         const survey = new Survey({
             title,
             body,
             subject,
             recipients: recipients.split(',').map(email => ({email: email.trim()})),
+            from,
             _user: req.user.id,
             dateSent: Date.now()
         });

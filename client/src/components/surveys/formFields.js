@@ -12,7 +12,11 @@ export default [
          name:'body'
     },
     {
-         label:'Recipient List',
+         label:'To Recipient List',
          name:'recipients'
+    },
+    {
+         label:'From',
+         name:'from'
     }
  ];
