@@ -1,11 +1,14 @@
 import React , { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchSurveys, deleteSurvey } from '../../actions';
+import { fetchSurveys, deleteSurvey, getSurvey } from '../../actions';
+import { withRouter } from 'react-router-dom';
+const _ = require('lodash');
 
 class SurveyList extends Component{
     componentDidMount(){
         this.props.fetchSurveys();
     }
+
 
     renderSurveys(){
         if(!this.props.sortAscending){
@@ -23,6 +26,7 @@ class SurveyList extends Component{
                                  <div className="card-action">
                                      <a href="#"><i style={{margin:'auto 10px', fontSize:'15px'}}className="material-icons">thumb_up</i>{survey.yes}</a>
                                      <a href="#"><i style={{margin:'auto 10px', fontSize:'15px'}}className="material-icons">thumb_down</i>{survey.no}</a>
+                                     {survey.draftmode?<a href="#" onClick={() => {this.props.getSurvey(survey._id, this.props.history)}}>edit</a>:''}
                                      <a href="#" className="right" onClick={() => this.props.deleteSurvey(survey._id)}><i style={{margin:'auto 10px', fontSize:'15px'}}className="material-icons">delete</i></a>
                                  </div>
                                  </div>
@@ -47,6 +51,7 @@ class SurveyList extends Component{
                              <div className="card-action">
                                  <a href="#"><i style={{margin:'auto 10px', fontSize:'15px'}}className="material-icons">thumb_up</i>{survey.yes}</a>
                                  <a href="#"><i style={{margin:'auto 10px', fontSize:'15px'}}className="material-icons">thumb_down</i>{survey.no}</a>
+                                 {survey.draftmode?<a href="#" onClick={() => {this.props.getSurvey(survey._id, this.props.history)}}>edit</a>:''}
                                  <a href="#" className="right" onClick={() => this.props.deleteSurvey(survey._id)}><i style={{margin:'auto 10px', fontSize:'15px'}}className="material-icons">delete</i></a>
                              </div>
                              </div>
@@ -61,8 +66,8 @@ class SurveyList extends Component{
     render(){
         return(
             <div className="container">
-                <div class="row">
-                    <div class="col s12">
+                <div className="row">
+                    <div className="col s12">
                         <div>
                         <button style={{margin:'10px 0px 0px 0px'}} className="btn-small right" onClick={this.props.onSortClick}>
                             Date
@@ -82,4 +87,4 @@ class SurveyList extends Component{
 function mapStateToProps({surveys}) {
     return {surveys};
 }
-export default connect(mapStateToProps, { fetchSurveys, deleteSurvey})(SurveyList);
+export default connect(mapStateToProps, { fetchSurveys, deleteSurvey, getSurvey})(withRouter(SurveyList));

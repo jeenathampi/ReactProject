@@ -5,14 +5,15 @@ import { reduxForm } from 'redux-form';
 
 
 class SurveyNew extends Component{
-    state = { showFormReview: false};
+    state = { showFormReview: false };
     renderContent(){
         if(this.state.showFormReview){
             return <SurveyFormReview onSurveyCancel={()=>this.setState({showFormReview:false})}/>
         }
 
         return(
-            <SurveyForm onSurveySubmit={()=> this.setState({showFormReview:true})}/>
+            <SurveyForm  onSurveySubmit={()=> this.setState({showFormReview:true})}/>
+            
         );
     }
     render(){
@@ -20,6 +21,7 @@ class SurveyNew extends Component{
             <div>
                 
                 {this.renderContent()}
+                
             </div>
         )
     }
