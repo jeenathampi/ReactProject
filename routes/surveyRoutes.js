@@ -25,6 +25,21 @@ module.exports= app => {
         res.send(surveys);
     });
 
+    app.get('/api/surveys/:id',async (req,res) => {
+        const survey = await Survey.findById(req.params.id);
+            const {title, subject, body, from, recipients} = survey
+            const emails = _.map(recipients, recipient => recipient.email);
+            const data={
+                title,
+                recipients:emails,
+                subject,
+                body,
+                from
+            }
+            
+        res.send(data);
+    })
+
     app.get('/api/surveys/:id/:choice', (req,res) => {
         res.send('Thank you for your feedback!');
     })
@@ -83,4 +98,22 @@ module.exports= app => {
             res.status(422).send(error);
         }
     });
+
+    app.post('/api/surveys/drafts', async (req,res) =>{
+        const {title, body, subject, recipients, from} = req.body;
+        
+        const survey = new Survey({
+            title,
+            body,
+            subject,
+            recipients: (recipients?recipients.split(',').map(email => ({email: email.trim()})):[] ),
+            from,
+            draftmode: true,
+            _user: req.user.id,
+            dateSent: Date.now()
+        });
+            await survey.save();
+            res.send(req.user);
+
+    })
 }

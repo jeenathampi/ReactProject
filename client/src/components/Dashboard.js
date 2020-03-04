@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import SurveyList from './surveys/SurveyList';
+import { reduxForm } from 'redux-form';
+import SurveyForm from './surveys/SurveyForm';
 
 
 class Dashboard extends Component{
@@ -23,4 +25,6 @@ class Dashboard extends Component{
 }
 
 
-export default Dashboard;
+export default reduxForm({
+    form:'SurveyForm'
+})(Dashboard);
