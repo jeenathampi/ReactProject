@@ -1,15 +1,15 @@
 import React, {Component} from 'react';
 import {reduxForm, Field, reset} from 'redux-form';
-import SurveyField from './SurveyField';
+import SurveyField from '../surveys/SurveyField';
 import { Link } from 'react-router-dom';
 import validateEmails from '../../utils/validateEmails';
-import formFields from './formFields';
+import formFields from '../surveys/formFields';
 import { connect } from 'react-redux';
 import { submitDraft } from '../../actions';
 import { withRouter } from 'react-router-dom';
 
 
-class SurveyForm extends Component{
+class DraftForm extends Component{
    
     renderFields(){
        return formFields.map(({ label, name}) =>{
@@ -22,8 +22,9 @@ class SurveyForm extends Component{
         return(
            
             <div className="container">
+                {/* {console.log(this.props)} */}
                 <div className="row">
-                    <form className="col s12" onSubmit={this.props.handleSubmit(this.props.onSurveySubmit)}>
+                    <form className="col s12" onSubmit={this.props.handleSubmit(this.props.onDraftSubmit)}>
                         <div className="input-field col s12">
                             {this.renderFields()}
                         </div>
@@ -31,15 +32,15 @@ class SurveyForm extends Component{
                         <Link to='/surveys' className="btn-small" type="submit" style={{margin:'10px'}}>cancel</Link>
                         
                     </form>
-                    <button onClick={() => {this.props.submitDraft(this.props.values, this.props.history)}} className="btn-small right" style={{margin:'10px'}}>Save as Draft</button>
+                    <button onClick={() => {this.props.submitDraft(this.props.DraftForm.values, this.props.history)}} className="btn-small right" style={{margin:'10px'}}>Save as Draft</button>
                 </div>
             </div>
         );
     }
 }
 
-function validate(values) {  
-    console.log(values);    
+function validate(values) { 
+    console.log(values);   
     const errors = {};
         errors.recipients = validateEmails(values.recipients || '');
         errors.from = validateEmails(values.from || '');
@@ -49,18 +50,23 @@ function validate(values) {
             }
         });
     
-
-    
     return errors;
 }
 
-function  mapStateToProps({form:{SurveyForm:{values}}}) {
-    return {values};
-}
-
-export default reduxForm({
+DraftForm = reduxForm({
     validate,
     destroyOnUnmount: false,
-    form:'SurveyForm',
+    form:'DraftForm',
+    enableReinitialize: true,
     forceUnregisterOnUnmount:true,
-})(connect(mapStateToProps,{submitDraft})(withRouter(SurveyForm)))
+})(DraftForm)
+
+export default connect(
+    ({form:{DraftForm}, load}) =>{
+        console.log(load);
+        return {
+            DraftForm,
+            initialValues: load.data
+        };
+    },{submitDraft}
+)(withRouter(DraftForm))

@@ -43,7 +43,7 @@ export const submitDraft=(values, history) => async dispatch => {
 export const getSurvey=(id, history)=> async (dispatch) => {
       const data = await axios.get(`/api/surveys/${id}`,id);
 
-      history.push('/surveys/new');
+      history.push('/surveys/draft');
         
       dispatch({type:LOAD, payload:data.data});
 }
