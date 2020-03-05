@@ -28,15 +28,18 @@ module.exports= app => {
     app.get('/api/surveys/:id',async (req,res) => {
         const survey = await Survey.findById(req.params.id);
             const {title, subject, body, from, recipients} = survey
-            const emails = _.map(recipients, recipient => recipient.email);
+            let email = "";
+            recipients.forEach(recipient => {
+                email = email.concat(recipient.email).concat(',');
+            });
+
             const data={
                 title,
-                recipients:emails,
+                recipients:email.slice(0,-1),
                 subject,
                 body,
                 from
             }
-            
         res.send(data);
     })
 
@@ -102,18 +105,19 @@ module.exports= app => {
     app.post('/api/surveys/drafts', async (req,res) =>{
         const {title, body, subject, recipients, from} = req.body;
         
-        const survey = new Survey({
-            title,
-            body,
-            subject,
-            recipients: (recipients?recipients.split(',').map(email => ({email: email.trim()})):[] ),
-            from,
-            draftmode: true,
-            _user: req.user.id,
-            dateSent: Date.now()
-        });
-            await survey.save();
-            res.send(req.user);
+            const survey = new Survey({
+                title,
+                body,
+                subject,
+                recipients: (recipients?recipients.split(',').map(email => ({email: email.trim()})):[] ),
+                from,
+                draftmode: true,
+                _user: req.user.id,
+                dateSent: Date.now()
+            });
+                await survey.save();
+                console.log(req.body);
+                res.send(req.user);
 
     })
 }

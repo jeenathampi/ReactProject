@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import SurveyList from './surveys/SurveyList';
-import { reduxForm } from 'redux-form';
-import SurveyForm from './surveys/SurveyForm';
+
+
 
 
 class Dashboard extends Component{
     state={ sortAscending: true }
-
     
     render(){
         return(
@@ -25,6 +24,4 @@ class Dashboard extends Component{
 }
 
 
-export default reduxForm({
-    form:'SurveyForm'
-})(Dashboard);
+export default Dashboard
