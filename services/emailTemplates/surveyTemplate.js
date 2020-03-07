@@ -3,7 +3,7 @@ module.exports = (survey) =>{
     return `
       <html>
        <body>
-        <div class="container>
+        <div style="text-align:center">
           <h2>Hi There!!</h2>
           <h3>We would like your input</h3>
           <p>Please answer the following question</p>
