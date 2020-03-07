@@ -23,7 +23,7 @@ const DraftFormReview = (props) => {
                 <div className="col s12">
                      {reviewFields}
                     <button className="btn-small" onClick={props.onDraftCancel}>Back</button>
-                    <button className="btn-small right" onClick={()=>{props.submitSurvey(props.values, props.history)}}>
+                    <button className="btn-small right" onClick={()=>{props.submitDraftSurvey(props.values.id, props.values, props.history)}}>
                         <i className="material-icons right">email</i>
                         Send Survey</button>
                 </div>

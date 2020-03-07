@@ -27,13 +27,14 @@ module.exports= app => {
 
     app.get('/api/surveys/:id',async (req,res) => {
         const survey = await Survey.findById(req.params.id);
-            const {title, subject, body, from, recipients} = survey
+            const {_id, title, subject, body, from, recipients} = survey
             let email = "";
             recipients.forEach(recipient => {
                 email = email.concat(recipient.email).concat(',');
             });
 
             const data={
+                id:_id,
                 title,
                 recipients:email.slice(0,-1),
                 subject,
@@ -104,7 +105,6 @@ module.exports= app => {
 
     app.post('/api/surveys/drafts', async (req,res) =>{
         const {title, body, subject, recipients, from} = req.body;
-        
             const survey = new Survey({
                 title,
                 body,
@@ -116,8 +116,49 @@ module.exports= app => {
                 dateSent: Date.now()
             });
                 await survey.save();
-                console.log(req.body);
                 res.send(req.user);
 
+    })
+
+    app.put('/api/surveys/drafts/:id', async (req,res) => {
+        const {title, body, subject, recipients, from} = req.body;
+          await Survey.findByIdAndUpdate(req.params.id, {
+              title,
+              body,
+              subject,
+              recipients: (recipients?recipients.split(',').map(email => ({email: email.trim()})):[] ),
+              from,
+              draftmode: true,
+              _user: req.user.id,
+              dateSent: Date.now()
+          })
+
+          res.send(req.user);
+    })
+
+    app.post('/api/surveys/drafts/:id', requireLogin, requireCredits, async (req,res) => {
+        const {title, body, subject, recipients, from} = req.body;
+        await Survey.findByIdAndRemove(req.params.id);
+        const survey = new Survey({
+            title,
+            body,
+            subject,
+            recipients: recipients.split(',').map(email => ({email: email.trim()})),
+            from,
+            _user: req.user.id,
+            dateSent: Date.now()
+        });
+
+        const mailer = new Mailer(survey, surveyTemplate(survey));
+
+        try {
+            await mailer.send();
+            await survey.save();
+            req.user.credits -= 1;
+            const user = await req.user.save();
+            res.send(user);   
+        } catch (error) {
+            res.status(422).send(error);
+        }
     })
 }

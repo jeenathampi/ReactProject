@@ -47,3 +47,17 @@ export const getSurvey=(id, history)=> async (dispatch) => {
         
       dispatch({type:LOAD, payload:data.data});
 }
+
+export const updateDraft=(id, values, history) => async dispatch => {
+      const res = await axios.put(`/api/surveys/drafts/${id}`, values);
+
+      history.push('/surveys');
+      dispatch({type:FETCH_USER, payload:res.data});
+}
+
+export const submitDraftSurvey =(id, values, history) => async dispatch =>{
+      const res = await axios.post(`/api/surveys/drafts/${id}`,values);
+      
+      history.push('/surveys');
+      dispatch({type:FETCH_USER, payload:res.data});
+   }
