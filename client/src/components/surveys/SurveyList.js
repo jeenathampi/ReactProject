@@ -12,7 +12,10 @@ class SurveyList extends Component{
 
     renderSurveys(){
         if(!this.props.sortAscending){
-            return this.props.surveys.reverse().map(survey => {
+          const sorted = this.props.surveys.sort((a,b) => {
+              return new Date(b.dateSent) - new Date(a.dateSent)
+          });
+          return sorted.map(survey => {
                 return(
                     <div key={survey._id} style={{margin:'0px 0px 40px 0px'}}>
                      <div  className="row">
@@ -36,30 +39,34 @@ class SurveyList extends Component{
                 )
             })
 
-        }
-        return this.props.surveys.map(survey => {
-            return(
-                <div key={survey._id} style={{margin:'0px 0px 40px 0px'}}>
-                 <div  className="row">
-                     <div className="col s12">
-                         <div className="card blue-grey darken-1">
-                             <div className="card-content white-text">
-                                 <span className="card-title">{survey.title}</span>
-                                 <p>{survey.body}</p>
-                                 <p className="right">Sent On: {new Date(survey.dateSent).toLocaleDateString()}</p>
-                             </div>
-                             <div className="card-action">
-                                 <a href="#"><i style={{margin:'auto 10px', fontSize:'15px'}}className="material-icons">thumb_up</i>{survey.yes}</a>
-                                 <a href="#"><i style={{margin:'auto 10px', fontSize:'15px'}}className="material-icons">thumb_down</i>{survey.no}</a>
-                                 {survey.draftmode?<a href="#" onClick={() => {this.props.getSurvey(survey._id, this.props.history)}}>edit</a>:''}
-                                 <a href="#" className="right" onClick={() => this.props.deleteSurvey(survey._id)}><i style={{margin:'auto 10px', fontSize:'15px'}}className="material-icons">delete</i></a>
-                             </div>
-                             </div>
+        } else{
+            const sorted = this.props.surveys.sort((a,b) => {
+                return new Date(a.dateSent) - new Date(b.dateSent)
+            });
+            return sorted.map(survey => {
+                return(
+                    <div key={survey._id} style={{margin:'0px 0px 40px 0px'}}>
+                     <div  className="row">
+                         <div className="col s12">
+                             <div className="card blue-grey darken-1">
+                                 <div className="card-content white-text">
+                                     <span className="card-title">{survey.title}</span>
+                                     <p>{survey.body}</p>
+                                     <p className="right">Sent On: {new Date(survey.dateSent).toLocaleDateString()}</p>
+                                 </div>
+                                 <div className="card-action">
+                                     <a href="#"><i style={{margin:'auto 10px', fontSize:'15px'}}className="material-icons">thumb_up</i>{survey.yes}</a>
+                                     <a href="#"><i style={{margin:'auto 10px', fontSize:'15px'}}className="material-icons">thumb_down</i>{survey.no}</a>
+                                     {survey.draftmode?<a href="#" onClick={() => {this.props.getSurvey(survey._id, this.props.history)}}>edit</a>:''}
+                                     <a href="#" className="right" onClick={() => this.props.deleteSurvey(survey._id)}><i style={{margin:'auto 10px', fontSize:'15px'}}className="material-icons">delete</i></a>
+                                 </div>
+                                 </div>
+                         </div>
                      </div>
-                 </div>
-                </div>
-            )
-        })
+                    </div>
+                )
+            })
+        }
     }
  
 

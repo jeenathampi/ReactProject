@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import validateEmails from '../../utils/validateEmails';
 import formFields from '../surveys/formFields';
 import { connect } from 'react-redux';
-import { submitDraft } from '../../actions';
+import { submitDraft, updateDraft } from '../../actions';
 import { withRouter } from 'react-router-dom';
 
 
@@ -32,7 +32,7 @@ class DraftForm extends Component{
                         <Link to='/surveys' className="btn-small" type="submit" style={{margin:'10px'}}>cancel</Link>
                         
                     </form>
-                    <button onClick={() => {this.props.submitDraft(this.props.DraftForm.values, this.props.history)}} className="btn-small right" style={{margin:'10px'}}>Save as Draft</button>
+                    <button onClick={() => {this.props.updateDraft(this.props.DraftForm.values.id, this.props.DraftForm.values, this.props.history)}} className="btn-small right" style={{margin:'10px'}}>Update Draft</button>
                 </div>
             </div>
         );
@@ -63,10 +63,9 @@ DraftForm = reduxForm({
 
 export default connect(
     ({form:{DraftForm}, load}) =>{
-        console.log(load);
         return {
             DraftForm,
             initialValues: load.data
         };
-    },{submitDraft}
+    },{submitDraft, updateDraft}
 )(withRouter(DraftForm))

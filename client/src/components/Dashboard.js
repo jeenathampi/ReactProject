@@ -11,7 +11,7 @@ class Dashboard extends Component{
     render(){
         return(
             <div>
-                <SurveyList onSortClick={() => this.setState({ sortAscending: false})} sortAscending={this.state.sortAscending}/>
+                <SurveyList onSortClick={() => this.setState({ sortAscending: !this.state.sortAscending})} sortAscending={this.state.sortAscending}/>
                 <div className="fixed-action-btn">
                     <Link to='/surveys/new' className="btn-floating btn-large red">
                         <i className="large material-icons">add</i>
